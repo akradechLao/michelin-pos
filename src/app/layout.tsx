@@ -22,7 +22,7 @@ export default function RootLayout({
     <html lang="en">
       <body className={`${inter.variable} font-sans antialiased`}>
         <Navigation />
-        <main className="min-h-screen bg-cream">{children}</main>
+        <main className="min-h-screen bg-warm-cream">{children}</main>
       </body>
     </html>
   );
