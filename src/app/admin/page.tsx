@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import { useRouter } from "next/navigation";
 import {
   Plus,
   Pencil,
@@ -13,6 +14,7 @@ import {
   Clock,
   Sparkles,
   BarChart3,
+  LogOut,
 } from "lucide-react";
 import { Card, CardContent, CardHeader, CardTitle } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -40,6 +42,7 @@ type MenuFormData = {
 const categories = ["อาหารไทย", "ของหวาน", "กาแฟร้อน", "กาแฟเย็น"];
 
 export default function AdminPage() {
+  const router = useRouter();
   const [menuItems, setMenuItems] = useState<MenuItem[]>([]);
   const [orders, setOrders] = useState<Order[]>([]);
   const [loading, setLoading] = useState(true);
@@ -51,6 +54,13 @@ export default function AdminPage() {
     category: "อาหารไทย",
     status: "available",
   });
+
+  useEffect(() => {
+    const auth = sessionStorage.getItem("admin_auth");
+    if (auth !== "true") {
+      router.push("/admin/login");
+    }
+  }, [router]);
 
   const fetchMenu = useCallback(async () => {
     const { data } = await supabase
@@ -181,14 +191,27 @@ export default function AdminPage() {
 
   return (
     <div className="max-w-7xl mx-auto px-3 sm:px-4 md:px-6 lg:px-8 py-4 sm:py-6">
-      <div className="mb-6 sm:mb-8 text-center sm:text-left">
-        <h1 className="font-black text-2xl sm:text-3xl md:text-4xl bg-gradient-to-r from-coral via-hot-pink to-sunny bg-clip-text text-transparent flex items-center gap-2 sm:gap-3 justify-center sm:justify-start">
-          <BarChart3 className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-coral" />
-          Dashboard
-        </h1>
-        <p className="text-coral-light mt-1.5 sm:mt-2 font-medium text-sm sm:text-base md:text-lg">
-          Manage menu and view daily reports
-        </p>
+      <div className="mb-6 sm:mb-8 flex flex-col sm:flex-row items-center sm:items-start justify-between gap-4">
+        <div className="text-center sm:text-left">
+          <h1 className="font-black text-2xl sm:text-3xl md:text-4xl bg-gradient-to-r from-coral via-hot-pink to-sunny bg-clip-text text-transparent flex items-center gap-2 sm:gap-3 justify-center sm:justify-start">
+            <BarChart3 className="w-6 h-6 sm:w-7 sm:h-7 md:w-8 md:h-8 text-coral" />
+            Dashboard
+          </h1>
+          <p className="text-coral-light mt-1.5 sm:mt-2 font-medium text-sm sm:text-base md:text-lg">
+            Manage menu and view daily reports
+          </p>
+        </div>
+        <Button
+          variant="outline"
+          className="border-2 border-coral/30 text-coral hover:bg-coral/10 font-semibold rounded-full text-sm flex items-center gap-2"
+          onClick={() => {
+            sessionStorage.removeItem("admin_auth");
+            router.push("/admin/login");
+          }}
+        >
+          <LogOut className="w-4 h-4" />
+          Logout
+        </Button>
       </div>
 
       {/* Stats Cards - Responsive grid */}
