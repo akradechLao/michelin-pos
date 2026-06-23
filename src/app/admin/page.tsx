@@ -463,77 +463,68 @@ export default function AdminPage() {
           </CardTitle>
         </CardHeader>
         <CardContent className="p-0">
-          <div className="max-h-[250px] sm:max-h-[300px] overflow-y-auto scrollbar-thin">
-            {/* Mobile: Card layout */}
-            <div className="sm:hidden divide-y divide-sunny/10">
-              {orders.length === 0 ? (
-                <p className="text-center text-gray-500 py-6 font-medium text-sm">
-                  No orders today
-                </p>
-              ) : (
-                orders.map((order) => (
-                  <div key={order.id} className="p-3 hover:bg-sunny/5 transition-colors">
-                    <div className="flex items-center justify-between mb-1">
-                      <span className="font-medium text-gray-800 text-sm">
-                        {format(new Date(order.created_at), "HH:mm")}
-                      </span>
-                      <span className="font-bold text-coral text-sm">
-                        ฿{order.total_amount.toFixed(2)}
-                      </span>
+          <div className="max-h-[400px] sm:max-h-[500px] overflow-y-auto scrollbar-thin">
+            {orders.length === 0 ? (
+              <p className="text-center text-gray-500 py-6 font-medium text-sm">
+                No orders today
+              </p>
+            ) : (
+              <div className="divide-y divide-sunny/10">
+                {orders.map((order) => {
+                  const items = order.items_json as CartItem[];
+                  const itemCount = items.reduce((sum, item) => sum + item.quantity, 0);
+                  return (
+                    <div key={order.id} className="p-3 sm:p-4 hover:bg-sunny/5 transition-colors">
+                      {/* Order Header */}
+                      <div className="flex items-center justify-between mb-2 sm:mb-3">
+                        <div className="flex items-center gap-2 sm:gap-3">
+                          <div className="w-8 h-8 sm:w-10 sm:h-10 bg-gradient-to-r from-coral to-hot-pink rounded-full flex items-center justify-center flex-shrink-0">
+                            <Clock className="w-4 h-4 sm:w-5 sm:h-5 text-white" />
+                          </div>
+                          <div>
+                            <p className="font-bold text-gray-800 text-sm sm:text-base">
+                              {format(new Date(order.created_at), "HH:mm")}
+                            </p>
+                            <p className="text-[10px] sm:text-xs text-gray-500">
+                              {items.length} types, {itemCount} items
+                            </p>
+                          </div>
+                        </div>
+                        <div className="text-right">
+                          <p className="font-black text-coral text-base sm:text-lg">
+                            ฿{order.total_amount.toFixed(2)}
+                          </p>
+                          <div className="flex items-center gap-2 text-[10px] sm:text-xs">
+                            <span className="text-gray-500">Paid: ฿{order.payment_received.toFixed(2)}</span>
+                            {order.change > 0 && (
+                              <span className="text-green-600">Change: ฿{order.change.toFixed(2)}</span>
+                            )}
+                          </div>
+                        </div>
+                      </div>
+                      
+                      {/* Order Items Detail */}
+                      <div className="bg-gradient-to-r from-coral/5 to-hot-pink/5 rounded-xl p-2.5 sm:p-3 border border-coral/10">
+                        <div className="space-y-1.5">
+                          {items.map((item, idx) => (
+                            <div key={idx} className="flex items-center justify-between text-xs sm:text-sm">
+                              <div className="flex items-center gap-1.5 sm:gap-2 flex-1 min-w-0">
+                                <div className="w-1.5 h-1.5 sm:w-2 sm:h-2 bg-coral rounded-full flex-shrink-0" />
+                                <span className="text-gray-700 truncate">{item.name}</span>
+                                <span className="text-gray-400 flex-shrink-0">x{item.quantity}</span>
+                              </div>
+                              <span className="font-semibold text-coral ml-2 flex-shrink-0">
+                                ฿{(item.price * item.quantity).toFixed(0)}
+                              </span>
+                            </div>
+                          ))}
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex items-center justify-between text-xs text-gray-500">
-                      <span>{(order.items_json as CartItem[]).length} items</span>
-                      <span>Paid: ฿{order.payment_received.toFixed(2)}</span>
-                      <span className="text-green-600">Change: ฿{order.change.toFixed(2)}</span>
-                    </div>
-                  </div>
-                ))
-              )}
-            </div>
-
-            {/* Desktop: Table layout */}
-            <div className="hidden sm:block overflow-x-auto">
-              <table className="w-full">
-                <thead>
-                  <tr className="border-b border-sunny/20 bg-sunny/5">
-                    <th className="text-left text-xs font-semibold text-gray-700 p-3">Time</th>
-                    <th className="text-left text-xs font-semibold text-gray-700 p-3">Items</th>
-                    <th className="text-right text-xs font-semibold text-gray-700 p-3">Total</th>
-                    <th className="text-right text-xs font-semibold text-gray-700 p-3">Paid</th>
-                    <th className="text-right text-xs font-semibold text-gray-700 p-3">Change</th>
-                  </tr>
-                </thead>
-                <tbody>
-                  {orders.length === 0 ? (
-                    <tr>
-                      <td colSpan={5} className="text-center text-gray-500 py-8 font-medium text-sm">
-                        No orders today
-                      </td>
-                    </tr>
-                  ) : (
-                    orders.map((order) => (
-                      <tr key={order.id} className="border-b border-sunny/10 hover:bg-sunny/5 transition-colors">
-                        <td className="font-medium text-gray-800 p-3 text-sm">
-                          {format(new Date(order.created_at), "HH:mm")}
-                        </td>
-                        <td className="text-gray-700 p-3 text-sm">
-                          {(order.items_json as CartItem[]).length} items
-                        </td>
-                        <td className="text-right font-bold text-coral p-3 text-sm">
-                          ฿{order.total_amount.toFixed(2)}
-                        </td>
-                        <td className="text-right text-gray-700 p-3 text-sm">
-                          ฿{order.payment_received.toFixed(2)}
-                        </td>
-                        <td className="text-right font-medium text-green-600 p-3 text-sm">
-                          ฿{order.change.toFixed(2)}
-                        </td>
-                      </tr>
-                    ))
-                  )}
-                </tbody>
-              </table>
-            </div>
+                  );
+                })}
+              </div>
+            )}
           </div>
         </CardContent>
       </Card>
