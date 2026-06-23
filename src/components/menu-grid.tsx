@@ -1,6 +1,7 @@
 "use client";
 
 import { useState, useEffect, useCallback } from "react";
+import Image from "next/image";
 import { Plus, Minus, UtensilsCrossed, Flame, Star } from "lucide-react";
 import { Card, CardContent } from "@/components/ui/card";
 import { Button } from "@/components/ui/button";
@@ -119,31 +120,62 @@ export function MenuGrid() {
                 {/* Gradient top accent */}
                 <div className="absolute top-0 left-0 right-0 h-1 bg-gradient-to-r from-coral via-hot-pink to-sunny opacity-0 group-hover:opacity-100 transition-opacity duration-300" />
 
-                <CardContent className="p-3 sm:p-4">
-                  <div className="flex items-start justify-between mb-2 sm:mb-3">
-                    <div className="flex-1 min-w-0">
-                      <h3 className="font-bold text-sm sm:text-base md:text-lg text-gray-800 truncate group-hover:text-coral transition-colors">
-                        {item.name}
-                      </h3>
-                      <Badge
-                        className={`mt-1.5 sm:mt-2 text-[10px] sm:text-xs font-semibold border ${categoryColors[item.category] || "bg-gray-100 text-gray-600"}`}
-                      >
-                        {item.category}
-                      </Badge>
+                <CardContent className="p-0">
+                  {/* Food Image */}
+                  {item.image_url ? (
+                    <div className="relative w-full aspect-square overflow-hidden">
+                      <Image
+                        src={item.image_url}
+                        alt={item.name}
+                        fill
+                        className="object-cover group-hover:scale-110 transition-transform duration-500"
+                        sizes="(max-width: 640px) 100vw, (max-width: 1024px) 50vw, 25vw"
+                      />
+                      <div className="absolute inset-0 bg-gradient-to-t from-black/60 via-transparent to-transparent" />
+                      <div className="absolute bottom-0 left-0 right-0 p-3 sm:p-4">
+                        <h3 className="font-bold text-sm sm:text-base md:text-lg text-white truncate drop-shadow-lg">
+                          {item.name}
+                        </h3>
+                        <div className="flex items-center justify-between mt-1">
+                          <Badge
+                            className={`text-[10px] sm:text-xs font-semibold border ${categoryColors[item.category] || "bg-gray-100 text-gray-600"}`}
+                          >
+                            {item.category}
+                          </Badge>
+                          <span className="font-black text-base sm:text-lg md:text-xl text-white drop-shadow-lg">
+                            ฿{item.price.toFixed(0)}
+                          </span>
+                        </div>
+                      </div>
                     </div>
-                    <div className="flex flex-col items-end ml-2">
-                      <span className="font-black text-base sm:text-lg md:text-xl bg-gradient-to-r from-coral to-hot-pink bg-clip-text text-transparent">
-                        ฿{item.price.toFixed(0)}
-                      </span>
-                      {qty === 0 && (
-                        <Flame className="w-3 h-3 sm:w-4 sm:h-4 text-sunny mt-0.5 sm:mt-1 animate-bounce" />
-                      )}
+                  ) : (
+                    <div className="p-3 sm:p-4">
+                      <div className="flex items-start justify-between mb-2 sm:mb-3">
+                        <div className="flex-1 min-w-0">
+                          <h3 className="font-bold text-sm sm:text-base md:text-lg text-gray-800 truncate group-hover:text-coral transition-colors">
+                            {item.name}
+                          </h3>
+                          <Badge
+                            className={`mt-1.5 sm:mt-2 text-[10px] sm:text-xs font-semibold border ${categoryColors[item.category] || "bg-gray-100 text-gray-600"}`}
+                          >
+                            {item.category}
+                          </Badge>
+                        </div>
+                        <div className="flex flex-col items-end ml-2">
+                          <span className="font-black text-base sm:text-lg md:text-xl bg-gradient-to-r from-coral to-hot-pink bg-clip-text text-transparent">
+                            ฿{item.price.toFixed(0)}
+                          </span>
+                          {qty === 0 && (
+                            <Flame className="w-3 h-3 sm:w-4 sm:h-4 text-sunny mt-0.5 sm:mt-1 animate-bounce" />
+                          )}
+                        </div>
+                      </div>
                     </div>
-                  </div>
+                  )}
 
                   {/* Quick add button when not in cart */}
                   {qty === 0 && (
-                    <div className="mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-coral/10 opacity-0 group-hover:opacity-100 transition-all duration-300">
+                    <div className={item.image_url ? "p-3 sm:p-4 pt-0" : "px-3 sm:px-4 pb-3 sm:pb-4"}>
                       <Button
                         size="sm"
                         className="w-full bg-gradient-to-r from-coral to-hot-pink text-white font-semibold rounded-full hover:shadow-warm transition-all duration-300 text-xs sm:text-sm py-1.5 sm:py-2"
@@ -161,7 +193,7 @@ export function MenuGrid() {
                   {/* Quantity controls when in cart */}
                   {qty > 0 && (
                     <div
-                      className="flex items-center justify-between mt-2 sm:mt-3 pt-2 sm:pt-3 border-t border-coral/10 animate-bounce-in"
+                      className={`flex items-center justify-between ${item.image_url ? "px-3 sm:px-4 pb-3 sm:pb-4" : "px-3 sm:px-4 pb-3 sm:pb-4 pt-0"}`}
                       onClick={(e) => e.stopPropagation()}
                     >
                       <div className="flex items-center gap-1.5 sm:gap-2">
