@@ -49,7 +49,7 @@ export function CartProvider({ children }: { children: ReactNode }) {
   const clearCart = useCallback(() => setItems([]), []);
 
   const subtotal = items.reduce((sum, item) => sum + item.price * item.quantity, 0);
-  const serviceCharge = subtotal * 0.1;
+  const serviceCharge = subtotal * 0.02;
   const vat = subtotal * 0.07;
   const total = subtotal + serviceCharge + vat;
 

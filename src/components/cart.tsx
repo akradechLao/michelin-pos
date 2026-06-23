@@ -150,7 +150,7 @@ export function Cart() {
                   <span className="font-medium">฿{subtotal.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
-                  <span>Service (10%)</span>
+                  <span>Service (2%)</span>
                   <span className="font-medium">฿{serviceCharge.toFixed(2)}</span>
                 </div>
                 <div className="flex justify-between text-gray-600">
